@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+For example GreedyRaAlgorithm::GreedyRaAlgorithm.new.search([[565,575],[25,185]], 100, 100, 0.3)
 
 ## Contributing
 
