@@ -36,7 +36,7 @@ module GreedyRaAlgorithm
     def local_search(best, cities, max_no_improv)
       count = 0
       begin
-        candidate = {:vector => stochastic_two_opt(best[:vector])}
+        candidate = {:vector => two_opt(best[:vector])}
         candidate[:cost] = cost(candidate[:vector], cities)
         count = (candidate[:cost] < best[:cost]) ? 0 : count + 1
         best = candidate if candidate[:cost] < best[:cost]
@@ -45,22 +45,23 @@ module GreedyRaAlgorithm
     end
 
     #get solution
-    def randomized_greedy_solution(cities, greedey)
+    def randomized_greedy_solution(cities, greedy)
       candidate = {}
       candidate[:vector] = [rand(cities.size)]
       allCities = Array.new(cities.size){|i| i}
-      while candidate[:vector].size < cities.size do ||
+      while candidate[:vector].size < cities.size
         candidates = allCities - candidate[:vector]
         costs = Array.new(candidates.size) do |i|
           euc_2d(cities[candidate[:vector].last], cities[i])
         end
         rcl, max, min = [], costs.max, costs.min
         costs.each_with_index do |cost, i|
-          rcl << candidates[i] if c <= (min + greedy(max - min))
+          rcl << candidates[i] if cost <= (min + greedy * (max - min))
         end
         candidate[:vector] << rcl[rand(rcl.size)]
       end
       candidate[:cost] = cost(candidate[:vector], cities)
+      candidate
     end
 
     # search
@@ -69,7 +70,7 @@ module GreedyRaAlgorithm
       max_iter.times do |iter|
         candidate = randomized_greedy_solution(cities, greedy)
         candidate = local_search(candidate, cities, max_no_improv)
-        best = candidate if candidate.nil? or candidate[:cost] < best[:cost]
+        best = candidate if best.nil? or candidate[:cost] < best[:cost]
         puts " > iteration #{(iter + 1)}, best #{best[:cost]}"
       end
       best
